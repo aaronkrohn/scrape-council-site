@@ -1,10 +1,13 @@
 'use strict'
 import express from 'express'
 const puppeteer = require('puppeteer')
+const morgan = require("morgan");
 
 
 const PORT = 4000
 const app = express()
+
+app.use(morgan("dev"));
 
 const SAVE = {
     nextDate: null,
