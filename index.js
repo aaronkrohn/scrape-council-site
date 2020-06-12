@@ -1,0 +1,62 @@
+'use strict'
+import express from 'express'
+const puppeteer = require('puppeteer')
+
+
+const PORT = 4000
+const app = express()
+
+const SAVE = {
+    nextDate: null,
+}
+
+app.get('/date', async (req, res) => {
+    const getTagContent = async (page, selector) => {
+        const element = await page.$(selector)
+        const text = await (await element.getProperty('textContent')).jsonValue()
+
+        return text
+    }
+    const getWebDataV2 = async () => {
+        const browser = await puppeteer.launch()
+        const page = await browser.newPage()
+        await page.goto('http://www.southkesteven.gov.uk/index.aspx?articleid=8930', { waitUntil: 'networkidle2' })
+
+        await page.waitFor('input[name=q]')
+        await page.$eval('input[name=q]', el => el.value = 'ng31 7wn')
+
+        await page.click(".subform button, input[type='submit']")
+
+        await page.waitForSelector('.delta select[name=address]')
+        const option = (await page.$x(
+            '//*[@id = "address"]/option[text() = "79 79  BRADLEY DRIVE  GRANTHAM  NG31 7WN"]',
+        ))[0]
+        const value = await (await option.getProperty('value')).jsonValue()
+        await page.select('.delta select[name=address]', value)
+
+        await page.click(".delta button[type='submit']")
+        await page.waitForSelector('.alert.icon--bin')
+
+        const nextBinDate = await getTagContent(page, '.alert__heading.alpha')
+
+        console.log(nextBinDate)
+
+        await browser.close()
+        return nextBinDate
+    }
+
+
+    if (SAVE.nextDate === null) {
+        const text = await getWebDataV2()
+
+        SAVE.nextDate = text
+
+        await res.json({ body: text })
+    } else {
+        await res.json({ body: SAVE.nextDate })
+    }
+})
+
+app.listen(PORT, () => {
+    console.log(`Server is listening on port: ${PORT}`)
+})

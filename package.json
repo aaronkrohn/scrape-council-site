@@ -1,0 +1,26 @@
+{
+  "name": "simple-express",
+  "version": "1.0.0",
+  "description": "express server with babel installed",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js --exec babel-node",
+    "build": "babel -d dist",
+    "serve": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "latif.s",
+  "license": "MIT",
+  "dependencies": {
+    "body-parse": "^0.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.16.3",
+    "puppeteer": "^3.3.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "nodemon": "^1.17.5"
+  }
+}
