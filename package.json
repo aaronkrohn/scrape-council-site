@@ -1,0 +1,24 @@
+{
+  "name": "scrape-council-site",
+  "version": "1.0.0",
+  "description": "## How to use? * npm install * Make sure to edit the package.json if there is a particular library or version you want to work with * run `npm start` to start the dev server with nodemon * if you are ready for production just: `npm run build` and `npm run serve` the files will be available in the dist folder",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vercel"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aaronkrohn/scrape-council-site.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aaronkrohn/scrape-council-site/issues"
+  },
+  "homepage": "https://github.com/aaronkrohn/scrape-council-site#readme",
+  "dependencies": {
+    "puppeteer": "^3.3.0",
+    "vercel": "^19.1.0"
+  }
+}
