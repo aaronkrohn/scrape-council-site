@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer')
+const chrome = require('chrome-aws-lambda')
 
 module.exports = async (req, res) => {
     const getTagContent = async (page, selector) => {
@@ -8,7 +9,11 @@ module.exports = async (req, res) => {
         return text
     }
     const getWebDataV2 = async () => {
-        const browser = await puppeteer.launch()
+        const browser = await puppeteer.launch({
+            args: chrome.args,
+            executablePath: await chrome.executablePath,
+            headless: chrome.headless,
+        })
         const page = await browser.newPage()
         await page.goto('http://www.southkesteven.gov.uk/index.aspx?articleid=8930', { waitUntil: 'networkidle2' })
 
