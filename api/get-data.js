@@ -33,17 +33,18 @@ module.exports = async (req, res) => {
         await page.waitForSelector('.alert.icon--bin')
 
         const nextBinDate = await getTagContent(page, '.alert__heading.alpha')
+        const colorBinInfo = await getTagContent(page, 'aside.alert.icon--bin > p:nth-child(2)')
 
-        console.log(nextBinDate)
 
         await browser.close()
-        return nextBinDate
+        return { nextBinDate, colorBinInfo }
     }
 
-    const DATE = await getWebDataV2()
+    const { nextBinDate, colorBinInfo } = await getWebDataV2()
 
 
     res.json({
-        body: DATE,
+        colorBinInfo,
+        nextBinDate,
     })
 }
