@@ -24,7 +24,7 @@ app.get('/date', async (req, res) => {
         const browser = await puppeteer.launch({
             args: chrome.args,
             executablePath: await chrome.executablePath,
-            headless: chrome.headless,
+            headless: true,
         })
 
         const page = await browser.newPage()
@@ -46,8 +46,6 @@ app.get('/date', async (req, res) => {
         await page.waitForSelector('.alert.icon--bin')
 
         const nextBinDate = await getTagContent(page, '.alert__heading.alpha')
-
-        console.log(nextBinDate)
 
         await browser.close()
         return nextBinDate
