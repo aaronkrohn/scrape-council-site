@@ -2,7 +2,11 @@
 const express = require('express')
 const puppeteer = require('puppeteer')
 const morgan = require("morgan")
-const chrome = require('chrome-aws-lambda')
+// const chrome = require('chrome-aws-lambda')
+// require AWS plugin
+const awsPlugin = require('puppeteer-extra-plugin-aws');
+// add AWS plugin
+
 
 const PORT = 8080
 const app = express()
@@ -21,11 +25,14 @@ app.get('/date', async (req, res) => {
         return text
     }
     const getWebDataV2 = async () => {
-        const browser = await puppeteer.launch({
-            args: chrome.args,
-            executablePath: await chrome.executablePath,
-            headless: true,
-        })
+        puppeteer.use(awsPlugin());
+        const browser = await puppeteer.launch()
+        //     {
+        //     args: chrome.args,
+        //     executablePath: await chrome.executablePath,
+        //     headless: true,
+        // }
+        // )
 
         const page = await browser.newPage()
         await page.goto('http://www.southkesteven.gov.uk/index.aspx?articleid=8930', { waitUntil: 'networkidle2' })
