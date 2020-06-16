@@ -1,13 +1,13 @@
 'use strict'
-import express from 'express'
+const express = require('express')
 const puppeteer = require('puppeteer')
-const morgan = require("morgan");
+const morgan = require("morgan")
+const chrome = require('chrome-aws-lambda')
 
-
-const PORT = 4000
+const PORT = 8080
 const app = express()
 
-app.use(morgan("dev"));
+app.use(morgan("dev"))
 
 const SAVE = {
     nextDate: null,
@@ -21,7 +21,12 @@ app.get('/date', async (req, res) => {
         return text
     }
     const getWebDataV2 = async () => {
-        const browser = await puppeteer.launch()
+        const browser = await puppeteer.launch({
+            args: chrome.args,
+            executablePath: await chrome.executablePath,
+            headless: chrome.headless,
+        })
+
         const page = await browser.newPage()
         await page.goto('http://www.southkesteven.gov.uk/index.aspx?articleid=8930', { waitUntil: 'networkidle2' })
 
