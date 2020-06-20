@@ -2,9 +2,15 @@ const puppeteer = require('puppeteer')
 const chrome = require('chrome-aws-lambda')
 
 module.exports = async (req, res) => {
-    const getTagContent = async (page, selector) => {
+    const getTagContent = async (page, selector, isDiv = false) => {
         const element = await page.$(selector)
-        const text = await (await element.getProperty('textContent')).jsonValue()
+        let text
+
+        if (isDiv) {
+            text = await (await element.getProperty('innerHTML')).jsonValue()
+        } else {
+            text = await (await element.getProperty('textContent')).jsonValue()
+        }
 
         return text
     }
@@ -35,16 +41,35 @@ module.exports = async (req, res) => {
         const nextBinDate = await getTagContent(page, '.alert__heading.alpha')
         const nextBinDateColor = await getTagContent(page, 'aside.alert.icon--bin > p:nth-child(2)')
 
+        // Second
+        let secondBinColor
+        const secondBinDate = await getTagContent(page, '.bindays article:nth-child(3) .binday__details .binday__cell--day', true)
+
+        const secondBinElement = await page.$('.bindays article:nth-child(3)')
+        const secondBinElementClassName = await (await secondBinElement.getProperty('className')).jsonValue()
+
+        if (secondBinElementClassName.search('green') !== -1) {
+            secondBinColor = 'green'
+        }
+        if (secondBinElementClassName.search('silver') !== -1) {
+            secondBinColor = 'silver'
+        }
+        if (secondBinElementClassName.search('black') !== -1) {
+            secondBinColor = 'black'
+        }
+
 
         await browser.close()
-        return { nextBinDate, nextBinDateColor }
+        return { nextBinDate, nextBinDateColor, secondBinColor, secondBinDate }
     }
 
-    const { nextBinDate, nextBinDateColor } = await getWebDataV2()
+    const { nextBinDate, nextBinDateColor, secondBinDate, secondBinColor } = await getWebDataV2()
 
 
     res.json({
         nextBinDateColor,
         nextBinDate,
+        secondBinDate,
+        secondBinColor,
     })
 }
