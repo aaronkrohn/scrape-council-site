@@ -2,18 +2,6 @@ const puppeteer = require('puppeteer')
 const chrome = require('chrome-aws-lambda')
 
 module.exports = async (req, res) => {
-    const POSTCODE = req.query.postcode
-    const ADDRESS = req.query.address
-
-    console.log(POSTCODE, 'POSTCODE_____')
-    console.log(ADDRESS, 'ADDRESS_____')
-
-    if (!POSTCODE || !ADDRESS) {
-        res.json({
-            error: 'Missing postcode or address',
-        })
-    }
-
     const getTagContent = async (page, selector, isDiv = false) => {
         const element = await page.$(selector)
         return await (await element.getProperty(isDiv ? 'innerHTML' : 'textContent')).jsonValue()
