@@ -2,6 +2,16 @@ const puppeteer = require('puppeteer')
 const chrome = require('chrome-aws-lambda')
 
 module.exports = async (req, res) => {
+    const POSTCODE = req.query.postcode
+    const ADDRESS = req.query.address
+
+
+    if (!POSTCODE || !ADDRESS) {
+        res.json({
+            error: 'Missing postcode or address',
+        })
+    }
+
     const getTagContent = async (page, selector, isDiv = false) => {
         const element = await page.$(selector)
         return await (await element.getProperty(isDiv ? 'innerHTML' : 'textContent')).jsonValue()
@@ -16,13 +26,13 @@ module.exports = async (req, res) => {
         await page.goto('http://www.southkesteven.gov.uk/index.aspx?articleid=8930', { waitUntil: 'networkidle2' })
 
         await page.waitFor('input[name=q]')
-        await page.$eval('input[name=q]', el => el.value = 'ng31 7wn')
+        await page.$eval('input[name=q]', el => el.value = POSTCODE)
 
         await page.click(".subform button, input[type='submit']")
 
         await page.waitForSelector('.delta select[name=address]')
         const option = (await page.$x(
-            '//*[@id = "address"]/option[text() = "79 79  BRADLEY DRIVE  GRANTHAM  NG31 7WN"]',
+            `//*[@id = "address"]/option[text() = ${ADDRESS}]`,
         ))[0]
         const value = await (await option.getProperty('value')).jsonValue()
         await page.select('.delta select[name=address]', value)
