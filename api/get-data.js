@@ -5,6 +5,9 @@ module.exports = async (req, res) => {
     const POSTCODE = req.query.postcode
     const ADDRESS = req.query.address
 
+    console.log(POSTCODE, 'POSTCODE')
+    console.log(ADDRESS, 'ADDRESS')
+
     if (!POSTCODE || !ADDRESS) {
         res.json({
             error: 'Missing postcode or address',
